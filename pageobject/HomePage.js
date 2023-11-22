@@ -10,12 +10,15 @@ class HomePage{
     this.addToCart = page.locator(".features_items [class*=add-to-cart]");
     this.contShop = page.locator("[class*=close-modal]");
     this.cart = page.locator("[href*='cart']:visible");
+    
     }
     
     
     async goTo (){
     
+       
         await this.page.goto("http://automationexercise.com");
+        
     }
     
     async homePageVisible(){

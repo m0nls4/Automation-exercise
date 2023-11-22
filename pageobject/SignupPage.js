@@ -20,12 +20,34 @@ constructor(page){
     this.createAcc = page.locator("[data-qa='create-account']");
     this.cretedText = page.locator("[data-qa='account-created']");
     this.continuebtn = page.locator("[data-qa='continue-button']");
+    this.loginas = page.locator(".shop-menu b");
+    this.cartVisible = page.locator("[href*='cart']:visible");
 
 
      
 
 
 }
+
+
+randomStringGenerator = () => {
+    const chars = 'abcdefghijklmnopqrstuvwxyz'
+    let result = ''
+    for (let i = 0; i < 3; i++) {
+       result += chars.charAt(Math.floor(Math.random() * chars.length))
+    }
+    return result
+ }
+ 
+generateRandomEmail = () =>{
+    const characters = 'abcdefghijklmnopqrstuvwxyz'
+    var domain = ['gmail.com', 'yahoo.com', 'hotmail.com', 'example.com']
+   var randomLocal = this.randomStringGenerator()
+   var randomDomain = domain[Math.floor(Math.random() * domain.length)]
+   var randomEmail = randomLocal + '@' + randomDomain
+   return randomEmail
+ 
+ }
 
 async signup (name, email){
 
@@ -55,6 +77,13 @@ async accountSuccessfulcreation(createdText){
     await this.continuebtn.click();
 }
 
+async verifylogin (name){
+    await expect (this.loginas).toHaveText(name)
+}
+
+async cartNavigation(){
+    await this.cartVisible.click();
+}
 
 
 }

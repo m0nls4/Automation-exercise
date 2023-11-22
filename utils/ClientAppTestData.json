@@ -1,0 +1,31 @@
+
+{
+    "url" : "http://automationexercise.com",
+    
+    "name" : "Jessy",
+    "password" : "1234",
+    "firstName" : "Jessy",
+    "lastName" : "Ab",
+    "address" : "Ontario", 
+    "country" : "Canada",
+    "state" : "Ontario",
+    "city" : "Ottawa",
+    "zipcode" : "1234",
+    "mobileNum" : "1234567890",
+    "createdText" : "Account Created!",
+
+   "prodName" : "Blue Top",
+    "comment" : "avoid Friday",
+
+
+    "cardHolderName" : "Jessy",
+    "cardnumber" : "123",
+    "cvcOnCard" : "223",
+    "expiryMonth" : "12",
+    "expiryYear" : "2024",
+    "successMessage" : " Your order has been placed successfully! "
+
+
+
+    
+}

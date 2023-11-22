@@ -16,7 +16,7 @@ class CartPage{
     
     async cartPageDisplayed(){
         
-        await this.cartProduct.last().waitFor();
+        await this.cartProduct.first().waitFor();
         await expect (this.cartProduct.last()).toBeVisible();
         
     }

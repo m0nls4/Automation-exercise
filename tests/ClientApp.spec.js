@@ -1,40 +1,158 @@
 const {expect, test} = require ('@playwright/test');
-const { HomePage } = require('../pageobject/HomePage');
-const {CartPage} = require('../pageobject/CartPage');
-const { Signup } = require('../pageobject/SignupPage');
+const { POManager } = require('../pageobject/POManager');
+const dataset = JSON.parse(JSON.stringify(require('../utils/ClientAppTestData.json')));
 
 
-test ("HomePage", async ({page})=> 
+test.describe.configure({mode:'serial'});
+
+test ("HomePage visible", async ({page})=> 
 {
+    const poManager = new POManager (page);
+    const homePage = poManager.gethomePage();
+    await homePage.goTo(dataset.url);
+    await homePage.homePageVisible();
 
-    const homePage = new HomePage (page);
+});
 
-    await homePage.goTo();
+test ("Display Cart", async ({page})=>
+{
+    const poManager = new POManager (page);
+    const homePage = poManager.gethomePage();
+    await homePage.goTo(dataset.url);
     await homePage.homePageVisible();
     await homePage.addItemTocart();
     await homePage.navigateTocart();
 
+    const cartPage = poManager.getcartPage();
+    await cartPage.cartPageDisplayed();
+});
 
-    const cartPage = new CartPage (page);
+test ("Verify Account is Created", async ({page})=>
+{
+    const poManager = new POManager (page);
+    const homePage = poManager.gethomePage();
+    await homePage.goTo(dataset.url);
+    await homePage.homePageVisible();
+    await homePage.addItemTocart();
+    await homePage.navigateTocart();
+
+    const cartPage = poManager.getcartPage();
     await cartPage.cartPageDisplayed();
     await cartPage.proceedToCheckout();
     await cartPage.navigateToSignup();
 
-    const signupPage = new Signup (page);
-    const name = "Rave";
-    const email = "rfoe@gati.com";
-    const password = "1234";
-    const firstName= "John";
-    const lastName= "Ab";
-    const address= "Ontario"; 
-    const country = "Canada"; 
-    const state= "Ontario"; 
-    const city= "Ottawa";
-    const zipcode = "1234";
-    const mobileNum = "1234567890";
-    const createdText = "Account Created!";
-    await signupPage.signup(name, email);
-    await signupPage.createAccount(password, firstName, lastName, address, country, state, city, zipcode, mobileNum);
-    await signupPage.accountSuccessfulcreation(createdText);
+    const signupPage = poManager.getsignupPage();
+    let email = signupPage.generateRandomEmail();
+    await signupPage.signup(dataset.name, email);
+    await signupPage.createAccount(dataset.password, dataset.firstName, dataset.lastName, dataset.address, dataset.country, dataset.state, dataset.city, dataset.zipcode, dataset.mobileNum);
+    await signupPage.accountSuccessfulcreation(dataset.createdText);
+
+});
+
+test ("Varify login as username", async ({page})=>
+{
+    const poManager = new POManager (page);
+    const homePage = poManager.gethomePage();
+    await homePage.goTo(dataset.url);
+    await homePage.homePageVisible();
+    await homePage.addItemTocart();
+    await homePage.navigateTocart();
+
+    const cartPage = poManager.getcartPage();
+    await cartPage.cartPageDisplayed();
+    await cartPage.proceedToCheckout();
+    await cartPage.navigateToSignup();
+
+    const signupPage = poManager.getsignupPage();
+    let email = signupPage.generateRandomEmail();
+    await signupPage.signup(dataset.name, email);
+    await signupPage.createAccount(dataset.password, dataset.firstName, dataset.lastName, dataset.address, dataset.country, dataset.state, dataset.city, dataset.zipcode, dataset.mobileNum);
+    await signupPage.accountSuccessfulcreation(dataset.createdText);
+    await signupPage.verifylogin(dataset.name);
+
+});
+
+test ("Verify Address Details and Review Order", async ({page})=>
+
+{
+    const poManager = new POManager (page);
+    const homePage = poManager.gethomePage();
+    await homePage.goTo(dataset.url);
+    await homePage.homePageVisible();
+    await homePage.addItemTocart();
+    await homePage.navigateTocart();
+
+    const cartPage = poManager.getcartPage();
+    await cartPage.cartPageDisplayed();
+    await cartPage.proceedToCheckout();
+    await cartPage.navigateToSignup();
+
+    const signupPage = poManager.getsignupPage();
+    let email = signupPage.generateRandomEmail();
+    await signupPage.signup(dataset.name, email);
+    await signupPage.createAccount(dataset.password, dataset.firstName, dataset.lastName, dataset.address, dataset.country, dataset.state, dataset.city, dataset.zipcode, dataset.mobileNum);
+    await signupPage.accountSuccessfulcreation(dataset.createdText);
+    await signupPage.verifylogin(dataset.name);
+    await signupPage.cartNavigation();
+
+    //click cart again
+    //await homePage.navigateTocart();
+    await cartPage.proceedToCheckout();
+
+    const checkOutPage = poManager.getcheckOutPage();
+
+    //variables for checkoutpage
+    const fullName = ". "+dataset.firstName.concat(" ", dataset.lastName);
+    const fullAddress = dataset.city.concat(" ",dataset.state).concat(" ",dataset.zipcode);
+
+    await checkOutPage.deliveryAddressDetails(fullName, dataset.address,fullAddress, dataset.country, dataset.mobileNum);
+    await checkOutPage.billingAddressDetails(fullName, dataset.address,fullAddress, dataset.country, dataset.mobileNum);
+    await checkOutPage.reviewProductByName(dataset.prodName);
+
+});
+
+test ("Order successful", async ({page})=>
+{   
+    const poManager = new POManager (page);
+    const homePage = poManager.gethomePage();
+    await homePage.goTo(dataset.url);
+    await homePage.homePageVisible();
+    await homePage.addItemTocart();
+    await homePage.navigateTocart();
+
+    const cartPage = poManager.getcartPage();
+    await cartPage.cartPageDisplayed();
+    await cartPage.proceedToCheckout();
+    await cartPage.navigateToSignup();
+
+    const signupPage = poManager.getsignupPage();
+    let email = signupPage.generateRandomEmail();
+    await signupPage.signup(dataset.name, email);
+    await signupPage.createAccount(dataset.password, dataset.firstName, dataset.lastName, dataset.address, dataset.country, dataset.state, dataset.city, dataset.zipcode, dataset.mobileNum);
+    await signupPage.accountSuccessfulcreation(dataset.createdText);
+    await signupPage.verifylogin(dataset.name);
+    await signupPage.cartNavigation();
+
+    //click cart again
+    //await homePage.navigateTocart();
+    await cartPage.proceedToCheckout();
+
+    const checkOutPage = poManager.getcheckOutPage();
+
+    //variables for checkoutpage
+    const fullName = ". "+dataset.firstName.concat(" ", dataset.lastName);
+    const fullAddress = dataset.city.concat(" ",dataset.state).concat(" ",dataset.zipcode);
+
+    await checkOutPage.deliveryAddressDetails(fullName, dataset.address,fullAddress, dataset.country, dataset.mobileNum);
+    await checkOutPage.billingAddressDetails(fullName, dataset.address,fullAddress, dataset.country, dataset.mobileNum);
+    await checkOutPage.reviewProductByName(dataset.prodName);
+    await checkOutPage.addMessage(dataset.comment);
+    await checkOutPage.placeOrder();
+    
+    //Payment page
+    const payment = poManager.getpaymentPage();
+    await payment.enterPaymentDetails(dataset.cardHolderName, dataset.cardnumber, dataset.cvcOnCard, dataset.expiryMonth, dataset.expiryYear);
+    await payment.payAndConfirm();
+    await payment.verifyOrderSuccessMessage(dataset.successMessage);
 
 });
