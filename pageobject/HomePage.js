@@ -14,7 +14,7 @@ class HomePage{
     }
     
     
-    async goTo (){
+    async goTo (url){
     
        
         await this.page.goto(url);
