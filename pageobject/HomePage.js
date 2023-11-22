@@ -17,7 +17,7 @@ class HomePage{
     async goTo (){
     
        
-        await this.page.goto("http://automationexercise.com");
+        await this.page.goto(url);
         
     }
     

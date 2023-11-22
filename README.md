@@ -22,5 +22,4 @@ Test Scenario:
 
 
 
-To run this project:
-Please execute this command: npx playwright test
+To run this project, Please execute this command: npx playwright test

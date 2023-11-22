@@ -3,7 +3,7 @@ const { POManager } = require('../pageobject/POManager');
 const dataset = JSON.parse(JSON.stringify(require('../utils/ClientAppTestData.json')));
 
 
-test.describe.configure({mode:'serial'});
+//test.describe.configure({mode:'serial'});
 
 test ("HomePage visible", async ({page})=> 
 {
